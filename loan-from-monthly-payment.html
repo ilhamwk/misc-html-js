@@ -1,0 +1,49 @@
+<html>
+<!-- Author: Ilham Kurnia -->
+<!-- Date: 29 Aug 2015 --> 
+<!-- License: Creative Commons Zero V1.0 --> 
+<script>
+function compound(principal, interestRate, months, monthlyPayment) {
+	var result = principal;
+	for (i = 0; i < months; i++) { // yes, rounding error does accumulate, but I don't care.
+		result = result * (1 + interestRate) - monthlyPayment;
+	}
+	return result;
+}
+
+function find() {
+	var monthlyPayment = document.getElementById("monthlyPayment").value;
+	var monthlyInterest = document.getElementById("interestRate").value / 1200.0;
+  var months = document.getElementById("years").value * 12;
+	var totalPayment = monthlyPayment * months;
+	var left = 0.0;
+	var right = totalPayment;
+	var mid, calc, interest;
+	var i;
+
+	for (i = 0; i < 50; i++) { // should be good enough
+		mid = (left + right) / 2.0;
+		calc = compound(mid, monthlyInterest, months, monthlyPayment);
+		if (calc < 0.0) {
+			left = mid;
+		} else {
+			right = mid;
+		}
+	}
+	interest = totalPayment - mid;
+
+	document.getElementById("loan").value = mid.toFixed(2);
+	document.getElementById("interest").value = interest.toFixed(2); 
+}
+</script>
+<body>
+<h1>Calculate expected principal loan from monthly payments</h1>
+Monthly payment:  <input id="monthlyPayment" type="number" /> <br/>
+Annual interest rate (%): <input id="interestRate" type="number" /> <br/>
+Number of years: <input id="years" type="number" /> <br/>
+<button type="button" onclick="find()">Calculate</button> <br/>
+
+Total principal loan: <input id="loan" type="number" /> 
+Total interest: <input id="interest" type="number" /> 
+</body>
+</html>
